@@ -1,5 +1,3 @@
-require "pry"
-
 # net/http is built into Ruby (no outside dependencies/gems)
 # require 'net/http'
 # require 'json'
@@ -8,27 +6,31 @@ require "pry"
 # require 'httparty'
 
 # Rest Client is a gem, need to 'gem install rest-client'
-require 'rest-client'
-require 'json'
+# require 'rest-client'
+# require 'json'
+
+
+# require "dotenv/load"
 
 # faraday - gem install faraday; gem install faraday_middleware
 
-class PokemonAPI
+class Pokedex::API
     def initialize
-        @url = "https://pokeapi.co/api/v2/pokemon"
+        @url = "https://pokeapi.co/api/v2/pokemon?limit=200"
     end
 
-    # def fetch_pokemon_net_http
-    #     uri = URI(@url + '?limit=200')
-    #     response = Net::HTTP.get(uri)
-    #     data = JSON.parse(response)
+    def fetch_pokemon_net_http
+        uri = URI(@url)
+        response = Net::HTTP.get(uri)
+        data = JSON.parse(response)
 
-    #     all_pokemon = data["results"]
-
-    #     all_pokemon.each do |p|
-    #         Pokemon.new(second_fetch(p["url"]))
-    #     end
-    # end
+        all_pokemon = data["results"]
+        all_pokemon.each do |p|
+            data = JSON.parse(Net::HTTP.get(URI(p["url"])))
+            Pokedex::Pokemon.new(data)
+            print "."
+        end
+    end
 
     # def fetch_pokemon_httparty
     #     response = HTTParty.get(@url)
@@ -36,11 +38,10 @@ class PokemonAPI
     #     binding.pry
     # end
 
-    def fetch_rest_client
-        response = RestClient.get(@url)
-        data = JSON.parse(response)
-        binding.pry
-    end
+    # def fetch_rest_client
+    #     response = RestClient.get(@url)
+    #     data = JSON.parse(response)
+    #     binding.pry
+    # end
 end
 
-PokemonAPI.new.fetch_rest_client
