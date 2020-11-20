@@ -7,4 +7,4 @@
 ## Ruby API
 - net/http (built into ruby)
 - HTTParty (gem, including dependency)
-- RestClinet (gem, dependency)
+- RestClient (gem, dependency)
